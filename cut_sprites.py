@@ -14,7 +14,7 @@ class Modified_img:
         left = STARTING_POS[1]
         top = STARTING_POS[0]
         right = left + SPRITE_DIMENSIONS[1]
-        bottom = left + SPRITE_DIMENSIONS[0]
+        bottom = top + SPRITE_DIMENSIONS[0]
         
         num = 0
         
@@ -27,7 +27,8 @@ class Modified_img:
                 num += 1
             top += SPRITE_DIMENSIONS[0]
             bottom += SPRITE_DIMENSIONS[1]
-            left, right = STARTING_POS
+            left = STARTING_POS[0]
+            right = left + SPRITE_DIMENSIONS[1]
     
     def rotate(self, directory):
         directory.replace('/up', '')
@@ -56,10 +57,12 @@ def main():
         print(path)
         for file in file_names:
             if file.split('.')[-1] == 'png':
-                if not os.path.isdir(path + '/' + file.remove('.png')):
+                if not os.path.isdir(path + '/' + file.removesuffix('.png')):
                     os.mkdir(path +'/' + file.split('.')[0])
                     
                 image = Modified_img(Image.open(path + '/' + file))
+                
+                image.cut_sprites(path + '/' + file.removesuffix('.png'))
                 
                 # rotate selected images
                 """
