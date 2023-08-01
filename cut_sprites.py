@@ -4,66 +4,72 @@ import os
 SPRITE_DIMENSIONS = (16, 16)
 STARTING_POS = (0, 0)
 
-path_in = 'c:/Users/szomi/Dropbox/Komputer/Desktop/NinjaAdventure'
-to_rotate = ['/Weapons/']
+class Modified_img:
+    def __init__(self, img):
+        self.img = img
+        self.size = self.width, self.height = img.size
+    
+    def cut_sprites(self, to_path):
+        # cut sprites from image
+        left = STARTING_POS[1]
+        top = STARTING_POS[0]
+        right = left + SPRITE_DIMENSIONS[1]
+        bottom = left + SPRITE_DIMENSIONS[0]
+        
+        num = 0
+        
+        while bottom <= self.height:
+            while right <= self.width:
+                sprite_image = self.img.crop((left, top, right, bottom))
+                sprite_image.save(to_path + '/' + str(num) + '.png')
+                left += SPRITE_DIMENSIONS[1]
+                right += SPRITE_DIMENSIONS[1]
+                num += 1
+            top += SPRITE_DIMENSIONS[0]
+            bottom += SPRITE_DIMENSIONS[1]
+            left, right = STARTING_POS
+    
+    def rotate(self, directory):
+        directory.replace('/up', '')
+        directory.replace('/down', '')
+        directory.replace('/left', '')
+        directory.replace('/right', '')
+        
+        up = self.img.rotate(0, expand = True)
+        up.save(directory + '/up.png')
+        left = self.img.rotate(90, expand = True)
+        left = self.img.resize((self.height, self.width), resample = 0)
+        left.save(directory + '/left.png')
+        down = self.img.rotate(180, expand = True)
+        down.save(directory + '/down.png')
+        right = self.img.resize((self.height, self.width), resample = 0)
+        right = self.img.rotate(270, expand = True)
+        right.save(directory + '/right.png')
 
-def cut(path_in):
+def main():
+    path_in = 'c:/Users/szomi/Dropbox/Komputer/Desktop/NinjaAdventure'
+    to_rotate = ['/Weapons/']
+
+
     for path, dir_names, file_names in os.walk(path_in):
         path = path.replace('\\', '/')
         print(path)
         for file in file_names:
             if file.split('.')[-1] == 'png':
-                print('here')
-                if not os.path.isdir(path + '/' + file.split('.')[0]):
+                if not os.path.isdir(path + '/' + file.remove('.png')):
                     os.mkdir(path +'/' + file.split('.')[0])
                     
-                image = Image.open(path + '/' + file)
-                width, height = image.size
+                image = Modified_img(Image.open(path + '/' + file))
                 
                 # rotate selected images
+                """
                 for part in to_rotate:
                     if part in path:
-                        pass
-                        #rotate(image, path + '/' + file.split('.')[0])
-                
-                # cut sprites from image
-                left = STARTING_POS[1]
-                top = STARTING_POS[0]
-                right = left + SPRITE_DIMENSIONS[1]
-                bottom = left + SPRITE_DIMENSIONS[0]
-                
-                num = 0
-                
-                while bottom <= height:
-                    while right <= width:
-                        sprite_image = image.crop((left, top, right, bottom))
-                        sprite_image.save(path+ '/' + file.split('.')[0] + '/' + str(num) + '.png')
-                        left += SPRITE_DIMENSIONS[1]
-                        right += SPRITE_DIMENSIONS[1]
-                        num += 1
-                    top += SPRITE_DIMENSIONS[0]
-                    bottom += SPRITE_DIMENSIONS[1]
-                    left, right = STARTING_POS
-            
-def rotate(image, directory):
-        directory.replace('/up', '')
-        directory.replace('/down', '')
-        directory.replace('/left', '')
-        directory.replace('/right', '')
-        width, height = image.size
+                        image.rotate(path + '/' + file.remove('.png'))
+                        """
         
-        up = image.rotate(0)
-        up.save(directory + '/up.png')
-        left = image.rotate(90)
-        left = image.resize((height, width), resample = 0)
-        left.save(directory + '/left.png')
-        down = image.rotate(180)
-        down.save(directory + '/down.png')
-        right = image.resize((height, width), resample = 0)
-        right = image.rotate(270)
-        right.save(directory + '/right.png')
         
 if __name__ == '__main__':
-    cut('c:/Users/szomi/Dropbox/Komputer/Desktop/NinjaAdventure')
+    main()
         
         
