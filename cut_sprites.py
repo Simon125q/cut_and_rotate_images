@@ -73,6 +73,8 @@ def main():
         
         
 if __name__ == '__main__':
-    main()
-        
+    #main()
+    image = Modified_img(Image.open("/home/simon/Desktop/bg/labyrinth.png"))
+                
+    image.cut_sprites("/home/simon/Desktop/bg")
         
